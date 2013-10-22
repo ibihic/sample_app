@@ -1,3 +1,6 @@
+# Note all static pages could follow simple structure of Home.
+# Left Help, About, Contact in different formats to see different options and meanings
+
 require 'spec_helper'
 
 describe "Static pages" do
@@ -13,27 +16,23 @@ describe "Static pages" do
   end
 
   describe "Help page" do
+    before { visit help_path }
 
-    it "should have the content 'Help'" do
-      visit help_path
-      expect(page).to have_content('Help')
-    end
-
-    it "should have the right title 'Help'" do
-      visit help_path
-      expect(page).to have_title("Sample App | Help")
-    end
+    it { should have_content('Help') }
+    it { should have_title(full_title('Help')) }
   end
 
   describe "About page" do
 
     it "should have the content 'About Us'" do
       visit about_path
+      click_link "About"
       expect(page).to have_content('About Us')
     end
 
     it "should have the right title 'About Us'" do
       visit about_path
+      click_link "About"
       expect(page).to have_title("Sample App | About Us")
     end
   end
@@ -42,11 +41,13 @@ describe "Static pages" do
 
     it "should have the content 'Contact Us'" do
       visit contact_path
+      click_link "Contact"
       expect(page).to have_content('Contact Us')
     end
 
     it "should have the right title 'Contact Us'" do
       visit contact_path
+      click_link "Contact"
       expect(page).to have_title("Sample App | Contact Us")
     end
   end
