@@ -45,17 +45,26 @@ describe "User pages" do
             click_link('delete', match: :first).to change(User, :count).by(-1)
           end
         end
-        it {should_not have_link('delete', href: user_path(admin)) }
+        it { should_not have_link('delete', href: user_path(admin)) }
       end
     end
   end
 
   describe "profile page" do
     let (:user) { FactoryGirl.create(:user) }
+    let!(:m1) { FactoryGirl.create(:resource, user: user, content: "Foo") }
+    let!(:m2) { FactoryGirl.create(:resource, user: user, content: "Bar") }
+
     before { visit user_path(user) }
 
     it { should have_content(user.name) }
     it { should have_title(user.name) }
+
+    describe "resources" do
+      it { should have_content(m1.content) }
+      it { should have_content(m2.content) }
+      it { should have_content(user.resources.count) }
+    end
   end
 
   describe "signup page" do

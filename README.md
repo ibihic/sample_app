@@ -1,3 +1,3 @@
-# Ruby on Rails Tutorial: sample application
+# Starter app: sample application
 
-sample application based on the [Ruby on Rails Tutorial]
+sample application

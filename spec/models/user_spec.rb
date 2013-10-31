@@ -16,7 +16,9 @@ describe User do
   it { should respond_to(:password_confirmation) }
   it { should respond_to(:remember_token) }
   it { should respond_to(:authenticate) }
-  it { should respond_to(:authenticate) }
+  it { should respond_to(:admin) }
+  it { should respond_to(:resources) }
+  it { should respond_to(:feed) }
 
   it { should be_valid }
   it { should_not be_admin }
@@ -135,5 +137,38 @@ describe User do
     before { @user.save }
     its(:remember_token) { should_not be_blank }
   end
-end
 
+  describe "resource associations" do
+
+    before { @user.save }
+    let!(:older_resource) do
+      FactoryGirl.create(:resource, user: @user, created_at: 1.day.ago)
+    end
+    let!(:newer_resource) do
+      FactoryGirl.create(:resource, user: @user, created_at: 1.hour.ago)
+    end
+
+    it "should have resources in correct order" do
+      expect(@user.resources.to_a).to eq [newer_resource, older_resource]
+    end
+
+    it "should destroy associated resources" do
+      resources = @user.resources.to_a
+      @user.destroy
+      expect(resources).not_to be_empty
+      resources.each do |resource|
+        expect(Resource.where(id: resource.id)).to be_empty
+      end
+    end
+
+    describe "status" do
+      let(:unfollowed_post) do
+        FactoryGirl.create(:resource, user: FactoryGirl.create(:user))
+      end
+
+      its(:feed) { should include(newer_resource) }
+      its(:feed) { should include(older_resource) }
+      its(:feed) { should_not include(unfollowed_post) }
+    end
+  end
+end

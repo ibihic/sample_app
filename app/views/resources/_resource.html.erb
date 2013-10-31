@@ -1,0 +1,11 @@
+<li>
+    <span class="content"><%= resource.content %></span>
+    <span class="timestamp">
+        Posted <%= time_ago_in_words(resource.created_at) %> ago.
+    </span>
+    <% if current_user?(resource.user) %>
+        <%= link_to "delete", resource, method: :delete,
+                                                    data: { confirm: "You sure?" },
+                                                    title: resource.content %>
+    <% end %>
+</li>
